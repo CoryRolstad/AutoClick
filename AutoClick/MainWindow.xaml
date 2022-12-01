@@ -36,7 +36,7 @@
             <DockPanel  VerticalAlignment="Center" HorizontalAlignment="Left" Canvas.Right="10" Canvas.Top="0" Width="196">
                 <Label DockPanel.Dock="Left" FontWeight="Bold">Delay:</Label>
                 <TextBox Text="{Binding ElementName=startDelay, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
-                <Slider Maximum="10" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" Name="startDelay" ValueChanged="StartDelay_ValueChanged" />
+                <Slider Maximum="10" Minimum="1" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" Name="startDelay" ValueChanged="StartDelay_ValueChanged" />
             </DockPanel>
         </Canvas>
 
@@ -44,7 +44,7 @@
             <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Canvas.Right="10" Canvas.Top="0" Width="196">
                 <Label DockPanel.Dock="Left" FontWeight="Bold">PerSecond:</Label>
                 <TextBox Text="{Binding ElementName=perSecond, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
-                <Slider Maximum="10" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" Name="perSecond" ValueChanged="PerSecond_ValueChanged" />
+                <Slider Maximum="40" Minimum="1" TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="True" Name="perSecond" ValueChanged="PerSecond_ValueChanged" />
             </DockPanel>
         </Canvas>
 
@@ -52,7 +52,7 @@
             <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Canvas.Right="10" Canvas.Top="0" Width="196">
                 <Label DockPanel.Dock="Left" FontWeight="Bold">Duration:</Label>
                 <TextBox Text="{Binding ElementName=duration, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
-                <Slider Maximum="10" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" Name="duration" ValueChanged="Duration_ValueChanged" />
+                <Slider Maximum="90" Minimum="1" TickPlacement="BottomRight" TickFrequency="5" IsSnapToTickEnabled="True" Name="duration" ValueChanged="Duration_ValueChanged" />
             </DockPanel>
         </Canvas>
 

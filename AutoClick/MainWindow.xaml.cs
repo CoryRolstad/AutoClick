@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -97,8 +98,33 @@ namespace AutoClick
 
             for (int delay = StartDelay; delay > 0; delay--)
             {
+                if (worker.CancellationPending == true)
+                {
+                    e.Cancel = true;
+                    return;
+                }
                 worker.ReportProgress((int)((StartDelay - delay / StartDelay) * 100), $"delay: {delay}");
                 System.Threading.Thread.Sleep(1000);
+            }
+
+            int timeBetweenClicks = (int)(1000 / PerSecond);
+            int duration = Duration * 1000;
+
+            worker.ReportProgress(1, "Clicking!");
+
+            for (int totalTime=0; totalTime < duration;) 
+            {
+                if (worker.CancellationPending == true)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+                //Do click
+                Clicker(); 
+
+                //Sleep Until Next Iteration
+                totalTime+= timeBetweenClicks;
+                System.Threading.Thread.Sleep(timeBetweenClicks);
             }
         }
 
