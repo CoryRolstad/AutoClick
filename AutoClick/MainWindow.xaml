@@ -43,16 +43,16 @@
         <Canvas Grid.Row="2" Grid.Column="1" Margin="0,3,0,0">
             <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Canvas.Right="10" Canvas.Top="0" Width="196">
                 <Label DockPanel.Dock="Left" FontWeight="Bold">PerSecond:</Label>
-                <TextBox Text="{Binding ElementName=startDelay2, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
-                <Slider Maximum="10" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" Name="startDelay2" ValueChanged="StartDelay_ValueChanged" />
+                <TextBox Text="{Binding ElementName=perSecond, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
+                <Slider Maximum="10" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" Name="perSecond" ValueChanged="PerSecond_ValueChanged" />
             </DockPanel>
         </Canvas>
 
         <Canvas Grid.Row="3" Grid.Column="1" Margin="0,3,0,0">
             <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Canvas.Right="10" Canvas.Top="0" Width="196">
                 <Label DockPanel.Dock="Left" FontWeight="Bold">Duration:</Label>
-                <TextBox Text="{Binding ElementName=startDelay3, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
-                <Slider Maximum="10" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" Name="startDelay3" ValueChanged="StartDelay_ValueChanged" />
+                <TextBox Text="{Binding ElementName=duration, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
+                <Slider Maximum="10" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" Name="duration" ValueChanged="Duration_ValueChanged" />
             </DockPanel>
         </Canvas>
 

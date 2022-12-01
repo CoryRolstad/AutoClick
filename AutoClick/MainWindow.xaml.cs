@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace AutoClick
 {
@@ -21,11 +12,33 @@ namespace AutoClick
     /// </summary>
     public partial class MainWindow : Window
     {
-        private bool ShallWeClick;
         private const int MOUSEEVENTF_LEFTDOWN = 0x02;
         private const int MOUSEEVENTF_LEFTUP = 0x04;
-        private int StartDelay = 5; 
+        private int StartDelay, PerSecond, Duration;
+        private Button MainButton;
+        private readonly BackgroundWorker worker; 
 
+        /// <summary>
+        /// Struct representing a point.
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential)]
+        public struct POINT
+        {
+            public int X;
+            public int Y;
+
+            public static implicit operator Point(POINT point)
+            {
+                return new Point(point.X, point.Y);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the cursor's position, in screen coordinates.
+        /// </summary>
+        /// <see>See MSDN documentation for further information.</see>
+        [DllImport("user32.dll")]
+        public static extern bool GetCursorPos(out POINT lpPoint);
 
         [DllImport("user32.dll", EntryPoint = "SetCursorPos")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -36,25 +49,93 @@ namespace AutoClick
 
         public MainWindow()
         {
-            ShallWeClick = false;
+            StartDelay = 0;
+            PerSecond = 0;
+            Duration = 0;
             InitializeComponent();
+            this.KeyDown += new KeyEventHandler(MainWindow_KeyDown);
+            worker = new BackgroundWorker();
+            worker.WorkerReportsProgress = true;
+            worker.WorkerSupportsCancellation = true;
+            worker.DoWork += worker_DoWork;
+            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+            worker.ProgressChanged += worker_ProgressChanged;
 
+        }
+
+        void MainWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Escape)
+            {
+                Console.WriteLine("Escape Pressed!");
+                if (worker.WorkerSupportsCancellation)
+                {
+                    worker.CancelAsync();
+                    UpdateButtonText("AutoClick!");
+                }
+            }
         }
 
         private void ButtonAutoClick_Click(object sender, RoutedEventArgs e)
         {
-            ShallWeClick = ShallWeClick ? false : true;
-            Random random = new Random();
-            Clicker(random.Next(0, 500), random.Next(0, 500)); 
-            
+            //Execute Clicker
+            Console.WriteLine("Test!");
+            if(MainButton == null)
+            {
+                if (sender.GetType() == typeof(Button))
+                    MainButton = (Button)sender;                
+            }
+
+            if(!worker.IsBusy)
+            {
+                worker.RunWorkerAsync();
+            }
         }
 
-        private void Clicker(int x, int y)
+        private void worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+
+            for (int delay = StartDelay; delay > 0; delay--)
+            {
+                worker.ReportProgress((int)((StartDelay - delay / StartDelay) * 100), $"delay: {delay}");
+                System.Threading.Thread.Sleep(1000);
+            }
+        }
+
+        private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            UpdateButtonText(e.UserState.ToString());
+        }
+
+        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            UpdateButtonText("AutoClick!");
+        }
+
+
+        private void UpdateButtonText(string text)
+        {
+            MainButton.Content= text;
+            MainButton.UpdateLayout();
+        }
+
+        private void MoveMouseToPosition(int x, int y)
         {
             SetCursorPos(x, y);
-            mouse_event(MOUSEEVENTF_LEFTDOWN, x, y, 0, 0);
-            mouse_event(MOUSEEVENTF_LEFTUP, x, y, 0, 0);
-            Console.WriteLine("clicked!"); 
+        }
+
+        private POINT GetCursorPosition()
+        {
+            POINT lpPoint;
+            GetCursorPos(out lpPoint);
+            return lpPoint;
+        }
+
+        private void Clicker()
+        {
+            POINT mouseLocation = GetCursorPosition();     
+            mouse_event(MOUSEEVENTF_LEFTDOWN, mouseLocation.X, mouseLocation.Y, 0, 0);
+            mouse_event(MOUSEEVENTF_LEFTUP, mouseLocation.X, mouseLocation.Y, 0, 0);
         }
 
         private void StartDelay_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -62,7 +143,15 @@ namespace AutoClick
             StartDelay = (int)e.NewValue;
         }
 
+        private void PerSecond_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            PerSecond = (int)e.NewValue;
+        }
 
+        private void Duration_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Duration = (int)e.NewValue;
+        }
 
     }
 }
